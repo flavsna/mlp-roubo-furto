@@ -1,0 +1,93 @@
+{
+ "modelo": "M3 (128-64-32 +DO)",
+ "config": {
+  "units": [
+   128,
+   64,
+   32
+  ],
+  "drop": 0.3,
+  "l2": 0.0,
+  "lr": 0.001,
+  "bs": 256
+ },
+ "teste": {
+  "acuracia": 0.833,
+  "precision": 0.7537067545304778,
+  "recall": 0.8191584601611459,
+  "f1": 0.7850707850707851
+ },
+ "n_features": 102,
+ "n_treino": 14000,
+ "n_val": 3000,
+ "n_teste": 3000,
+ "matriz_confusao": [
+  [
+   1584,
+   299
+  ],
+  [
+   202,
+   915
+  ]
+ ],
+ "comparacao": [
+  {
+   "modelo": "M1 (16)",
+   "parâmetros": 1665,
+   "épocas (melhor)": 28,
+   "acc treino": 0.8361,
+   "acc val": 0.8277,
+   "precision val": 0.7421,
+   "recall val": 0.8238,
+   "F1 val": 0.7808,
+   "val_loss": 0.3944,
+   "gap acc (treino-val)": 0.0085
+  },
+  {
+   "modelo": "M2 (64-32)",
+   "parâmetros": 8705,
+   "épocas (melhor)": 7,
+   "acc treino": 0.8379,
+   "acc val": 0.8287,
+   "precision val": 0.737,
+   "recall val": 0.8399,
+   "F1 val": 0.7851,
+   "val_loss": 0.397,
+   "gap acc (treino-val)": 0.0093
+  },
+  {
+   "modelo": "M3 (128-64-32 +DO)",
+   "parâmetros": 23553,
+   "épocas (melhor)": 8,
+   "acc treino": 0.8426,
+   "acc val": 0.8313,
+   "precision val": 0.7448,
+   "recall val": 0.8327,
+   "F1 val": 0.7863,
+   "val_loss": 0.3939,
+   "gap acc (treino-val)": 0.0113
+  },
+  {
+   "modelo": "M4 (128-64 +L2+DO)",
+   "parâmetros": 21505,
+   "épocas (melhor)": 20,
+   "acc treino": 0.8454,
+   "acc val": 0.8287,
+   "precision val": 0.7363,
+   "recall val": 0.8417,
+   "F1 val": 0.7855,
+   "val_loss": 0.4082,
+   "gap acc (treino-val)": 0.0167
+  }
+ ],
+ "referencias": {
+  "majoritaria_acc": 0.6276666522026062,
+  "logistica": {
+   "acuracia": 0.834,
+   "precision": 0.7607413647851727,
+   "recall": 0.8084153983885407,
+   "f1": 0.7838541666666666
+  }
+ }
+}

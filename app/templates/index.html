@@ -1,0 +1,49 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roubo ou furto? — MLP SSP-SP</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--tx:#1d2330;--mut:#667085;--bd:#d9dde5;--roubo:#c0392b;--furto:#2e6fbd;--acc:#1d2330}
+@media (prefers-color-scheme:dark){:root{--bg:#14171f;--card:#1e222d;--tx:#e8eaf0;--mut:#9aa3b5;--bd:#333a49;--acc:#e8eaf0}}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+main{max-width:980px;margin:0 auto;padding:24px 16px}h1{font-size:1.5rem;margin:0 0 4px}.sub{color:var(--mut);margin:0 0 16px}
+.warn{background:rgba(230,160,0,.12);border:1px solid rgba(230,160,0,.5);border-radius:10px;padding:10px 14px;font-size:.9rem;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}@media(max-width:800px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px}
+label{display:block;font-size:.82rem;color:var(--mut);margin:10px 0 3px}
+input,select{width:100%;padding:9px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);font-size:.95rem}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{margin-top:16px;width:100%;padding:12px;border:0;border-radius:10px;background:var(--acc);color:var(--bg);font-size:1rem;font-weight:600;cursor:pointer}
+.res h2{margin:0 0 4px;font-size:1.05rem;color:var(--mut);font-weight:600}.big{font-size:2rem;font-weight:700;margin:4px 0 14px}
+.bar{height:22px;border-radius:6px;background:var(--bd);overflow:hidden;margin:4px 0 12px}.bar>div{height:100%;transition:width .4s}
+.small{font-size:.8rem;color:var(--mut)}.hint{font-size:.75rem;color:var(--mut)}
+</style></head><body><main>
+<h1>Esta ocorrência é mais compatível com roubo ou furto?</h1>
+<p class="sub">MLP treinada com boletins de celulares subtraídos na cidade de São Paulo (SSP-SP, 2024–2025)</p>
+<div class="warn"><b>Atenção:</b> o modelo classifica o <i>tipo</i> de uma ocorrência já registrada ou hipotética. Ele <b>não</b> calcula a chance de um crime acontecer em um local ou horário.</div>
+<div class="grid"><div class="card"><form id="f" onsubmit="return false">
+<label>Bairro</label><input name="bairro" list="bairros" value="PINHEIROS"><datalist id="bairros">{% for b in bairros %}<option value="{{b}}">{% endfor %}</datalist>
+<div class="hint">Bairros fora da lista dos 40 mais frequentes são tratados como "Outros".</div>
+<div class="row"><div><label>Tipo de local</label><select name="tipo_local">{% for t in tipos %}<option>{{t}}</option>{% endfor %}</select></div>
+<div><label>Subtipo de local</label><select name="subtipo_local">{% for t in subtipos %}<option>{{t}}</option>{% endfor %}</select></div></div>
+<div class="row"><div><label>Dia da semana</label><select name="dia_semana">{% for d in dias %}<option value="{{loop.index0}}" {% if loop.index0==4 %}selected{% endif %}>{{d}}</option>{% endfor %}</select></div>
+<div><label>Mês</label><select name="mes">{% for m in range(1,13) %}<option value="{{m}}">{{m}}</option>{% endfor %}</select></div></div>
+<div class="row"><div><label>Hora exata (opcional)</label><input type="time" name="hora" value="21:00"></div>
+<div><label>Período (se não souber a hora)</label><select name="periodo">{% for p in periodos %}<option {% if p=='Não informado' %}selected{% endif %}>{{p}}</option>{% endfor %}</select></div></div>
+<div class="row"><div><label>Marca do aparelho</label><select name="marca">{% for t in marcas %}<option>{{t}}</option>{% endfor %}</select></div>
+<div><label>Dias entre o fato e o registro do BO</label><input type="number" name="dias_registro" min="0" max="365" value="0"></div></div>
+<label>Quantidade de aparelhos</label><input type="number" name="qtd" min="1" max="3" value="1">
+<button id="go">Classificar</button></form></div>
+<div class="card res"><h2>Resultado</h2><div id="out" class="small">Preencha o formulário e clique em <b>Classificar</b>.</div>
+<hr style="border:0;border-top:1px solid var(--bd);margin:18px 0"><div class="small">Modelo: <b>{{meta.modelo}}</b> · {{meta.n_features}} entradas<br>
+Teste ({{meta.n_teste}} registros): acurácia {{'%.1f'|format(meta.teste.acuracia*100)}}% · precision {{'%.2f'|format(meta.teste.precision)}} · recall {{'%.2f'|format(meta.teste.recall)}} · F1 {{'%.2f'|format(meta.teste.f1)}}<br>
+Probabilidades não calibradas. Exemplo de leitura correta: "dado que uma ocorrência com estas características foi registrada, o modelo atribui X% à classe roubo".</div></div></div>
+<script>
+const f=document.getElementById('f'),out=document.getElementById('out');
+document.getElementById('go').onclick=async()=>{
+ const d=Object.fromEntries(new FormData(f).entries());
+ const r=await fetch('/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
+ const j=await r.json(); if(!r.ok){out.textContent=j.error;return}
+ const pr=(j.prob_roubo*100).toFixed(1),pf=(j.prob_furto*100).toFixed(1);
+ out.innerHTML=`<div class="small">Classe estimada</div><div class="big" style="color:var(--${j.classe})">${j.classe.toUpperCase()}</div>
+ <div>Roubo: <b>${pr}%</b></div><div class="bar"><div style="width:${pr}%;background:var(--roubo)"></div></div>
+ <div>Furto: <b>${pf}%</b></div><div class="bar"><div style="width:${pf}%;background:var(--furto)"></div></div>`};
+</script></main></body></html>

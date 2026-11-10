@@ -1,0 +1,9 @@
+{
+ "registros na base (estado de SP)": 383635,
+ "fatos ocorridos em São Paulo (capital)": 216129,
+ "rubrica = furto ou roubo": 183798,
+ "sem boletins ambíguos (furto+roubo)": 183657,
+ "1 linha por boletim (sem duplicidades)": 161570,
+ "datas consistentes (2024-2025, registro >= fato)": 161354,
+ "amostra utilizada": 20000
+}
