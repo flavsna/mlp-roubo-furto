@@ -5,7 +5,7 @@ Uma rede **MLP** (TensorFlow/Keras) classifica boletins de ocorrência de celula
 
 > ⚠️ O modelo classifica o **tipo** de uma ocorrência já registrada (ou hipotética). Ele **não** prevê crimes nem calcula o risco de um crime acontecer em um local/horário.
 
-**Equipe:** Ana Clara Alcântara Lopes, Ana Flávia Couto Chaves, Izabely dos Santos Silva, Natalia Heloisa Rocha de Alcântara Bezerra e Raissa Marinho de Jesus Viana  
+**Equipe:** Ana Clara Alcântara Lopes, Ana Flávia Couto Chaves e Izabely dos Santos Silva  
 **Aplicação web:** https://mlp-roubo-furto.onrender.com  
 **Repositório:** https://github.com/flavsna/mlp-roubo-furto
 
